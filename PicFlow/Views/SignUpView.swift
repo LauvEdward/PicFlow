@@ -11,6 +11,8 @@ struct SignUpView: View {
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var passwordAgain: String = ""
+    @State private var showActionSheet = false
+    @State private var showImagePicker = false
     
     var body: some View {
         GeometryReader { proxy in
@@ -22,6 +24,27 @@ struct SignUpView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(maxWidth: availableWidth / 2)
+                    
+                    VStack {
+                        Image(systemName: "plus")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxWidth: 50)
+                            .cornerRadius(25)
+                            .padding(25)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 50)
+                                    .stroke(lineWidth: 1)
+                                    .foregroundColor(.gray)
+                            }
+                        Text("Avatar")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                    }
+                    .onTapGesture {
+                        showActionSheet = true
+                    }
+                    
                     
                     PFTextField(value: $email, placeholder: "Email", isSecureTextEntry: false)
                     PFTextField(value: $password, placeholder: "Password", isSecureTextEntry: true)
@@ -72,6 +95,17 @@ struct SignUpView: View {
                     .padding(.bottom)
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
+            .actionSheet(isPresented: $showActionSheet) {
+                ActionSheet(title: Text("Select photo"), buttons: [
+                    .default(Text("Choose a library"), action: {
+                        
+                    }),
+                    .default(Text("Take a photo"), action: {
+                        
+                    }),
+                    .cancel()
+                ])
+            }
         }
     }
 }
