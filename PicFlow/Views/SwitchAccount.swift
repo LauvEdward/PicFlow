@@ -21,6 +21,7 @@ struct SwitchAccount: View {
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: availableWidth / 4)
+                    .cornerRadius(availableWidth / 8)
                 Text("jacob_w")
                     .fontWeight(.semibold)
                 
@@ -29,15 +30,12 @@ struct SwitchAccount: View {
                 } label: {
                     Text("Login")
                 }
-                .frame(maxWidth: availableWidth / 1.5, maxHeight: 40)
-                .foregroundColor(.white)
-                .background(Color.blue)
-                .cornerRadius(5)
+                .buttonStyle(PFButtonStyle(isEnable: true))
+                .frame(maxWidth: availableWidth / 1.5)
+
                 
                 Text("Switch accounts")
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .foregroundColor(.blue)
+                    .subTextBlue()
                 Spacer()
                 Divider()
                 HStack {
@@ -47,6 +45,7 @@ struct SwitchAccount: View {
                     Text("Sign up")
                         .font(Font.subheadline.bold())
                 }
+                .padding(.bottom)
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
         }

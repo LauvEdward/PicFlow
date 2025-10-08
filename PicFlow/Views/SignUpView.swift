@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct SignInView: View {
+struct SignUpView: View {
     @State private var email: String = ""
     @State private var password: String = ""
+    @State private var passwordAgain: String = ""
     
     var body: some View {
         GeometryReader { proxy in
@@ -23,30 +24,22 @@ struct SignInView: View {
                         .frame(maxWidth: availableWidth / 2)
                     
                     PFTextField(value: $email, placeholder: "Email", isSecureTextEntry: false)
-                    
                     PFTextField(value: $password, placeholder: "Password", isSecureTextEntry: true)
-                    
+                    PFTextField(value: $passwordAgain, placeholder: "Password-Again", isSecureTextEntry: true)
                     
                     HStack {
                         Spacer()
                         Text("Forgot password?")
                             .subTextBlue()
                     }
-                    
-                    
                     Button {
                         
                     } label: {
-                        Text("Login")
+                        Text("Sign Up")
                     }
-                    .buttonStyle(PFButtonStyle(isEnable:!(email.isEmpty || password.isEmpty)))
+                    .buttonStyle(PFButtonStyle(isEnable:!(email.isEmpty || password.isEmpty || password.isEmpty || (passwordAgain != password))))
                     .frame(maxWidth: availableWidth / 1.5)
                     
-                    HStack {
-                        Image("facebook_mini")
-                        Text("Log in with Facebook")
-                            .subTextBlue()
-                    }
                     
                     HStack {
                         VStack {
@@ -62,10 +55,10 @@ struct SignInView: View {
                     }
                     
                     HStack {
-                        Text("Don’t have an account?")
+                        Text("Have an account?")
                             .font(.subheadline)
                             .foregroundColor(.gray)
-                        Text("Sign up")
+                        Text("Login")
                             .subTextBlue()
                     }
                 }
@@ -84,5 +77,5 @@ struct SignInView: View {
 }
 
 #Preview {
-    SignInView()
+    SignUpView()
 }
