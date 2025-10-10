@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct SignUpView: View {
     @State private var email: String = ""
@@ -13,6 +14,16 @@ struct SignUpView: View {
     @State private var passwordAgain: String = ""
     @State private var showActionSheet = false
     @State private var showImagePicker = false
+    @State private var profileImage: Image?
+    @State private var pickedImage: Image?
+    @State private var imageData: Data = Data()
+    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
+    @Environment(\.dismiss) var dismiss
+    
+    func loadImage() {
+        guard let inputImage = pickedImage else { return }
+        profileImage = inputImage
+    }
     
     var body: some View {
         GeometryReader { proxy in
@@ -26,17 +37,25 @@ struct SignUpView: View {
                         .frame(maxWidth: availableWidth / 2)
                     
                     VStack {
-                        Image(systemName: "plus")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(maxWidth: 50)
-                            .cornerRadius(25)
-                            .padding(25)
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 50)
-                                    .stroke(lineWidth: 1)
-                                    .foregroundColor(.gray)
-                            }
+                        if profileImage != nil {
+                            profileImage?
+                                .resizable()
+                                .clipShape(Circle())
+                                .frame(width: 100, height: 100)
+                                .cornerRadius(25)
+                        } else {
+                            Image(systemName: "plus")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxWidth: 50)
+                                .cornerRadius(25)
+                                .padding(25)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 50)
+                                        .stroke(lineWidth: 1)
+                                        .foregroundColor(.gray)
+                                }
+                        }
                         Text("Avatar")
                             .font(.subheadline)
                             .foregroundColor(.gray)
@@ -83,6 +102,9 @@ struct SignUpView: View {
                             .foregroundColor(.gray)
                         Text("Login")
                             .subTextBlue()
+                            .onTapGesture {
+                                dismiss()
+                            }
                     }
                 }
                 
@@ -98,13 +120,18 @@ struct SignUpView: View {
             .actionSheet(isPresented: $showActionSheet) {
                 ActionSheet(title: Text("Select photo"), buttons: [
                     .default(Text("Choose a library"), action: {
-                        
+                        self.sourceType = .photoLibrary
+                        showImagePicker = true
                     }),
                     .default(Text("Take a photo"), action: {
-                        
+                        self.sourceType = .camera
+                        showImagePicker = true
                     }),
                     .cancel()
                 ])
+            }
+            .sheet(isPresented: $showImagePicker, onDismiss: loadImage) {
+                ImagePicker(pickerImage: self.$pickedImage, showImagePicker: $showImagePicker, imageData: $imageData)
             }
         }
     }
