@@ -6,12 +6,26 @@
 //
 
 import SwiftUI
+import FirebaseCore
+import Photos
 
 @main
 struct PicFlowApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @State var phasset: PHAsset?
     var body: some Scene {
         WindowGroup {
-            SignUpView()
+            SplashView()
+                .environmentObject(SessionStore())
+//            PhotoLibraryView(phAssetSelect: $phasset)
         }
+    }
+}
+
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        return true
     }
 }
