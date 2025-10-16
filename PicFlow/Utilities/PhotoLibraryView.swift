@@ -10,7 +10,7 @@ import Photos
 
 struct PhotoLibraryView: View {
     @Binding var phAssetSelect: PHAsset?
-    @StateObject var photoLibraryService: PhotoLibraryService = PhotoLibraryService()
+    @ObservedObject var photoLibraryService: PhotoLibraryService
     let columns = Array(repeating: GridItem(.flexible(), spacing: 2), count: 4)
     var body: some View {
         GeometryReader { geometry in
@@ -19,11 +19,7 @@ struct PhotoLibraryView: View {
                 LazyVGrid(columns: columns, spacing: 2) {
                     ForEach(photoLibraryService.list, id: \.self) { phasset in
                         AssetCell(asset: phasset, size: CGFloat(w/4), selectImage: $phAssetSelect)
-                    }
-                }
-                .onAppear {
-                    photoLibraryService.requestAuthorization { error in
-                        print(error)
+                            .cornerRadius(5)
                     }
                 }
             }
@@ -42,7 +38,7 @@ struct AssetCell: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
-                if selectImage == asset {
+                if selectImage?.localIdentifier == asset.localIdentifier {
                     ZStack {
                         Rectangle()
                             .fill(.gray.opacity(0.5))
@@ -62,7 +58,6 @@ struct AssetCell: View {
         }
         .frame(width: size, height: size)
         .clipped()
-        .background(.red)
         .onAppear { loadThumbnail() }
     }
     

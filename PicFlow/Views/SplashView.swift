@@ -20,6 +20,7 @@ struct SplashView: View {
                 } else {
                     if session.session != nil {
                         HomeView()
+                            .environmentObject(PhotoLibraryService())
                     } else {
                         SignInView()
                     }

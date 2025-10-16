@@ -13,6 +13,7 @@ import Photos
 struct PicFlowApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State var phasset: PHAsset?
+    @StateObject var photoLibraryService = PhotoLibraryService()
     var body: some Scene {
         WindowGroup {
             SplashView()

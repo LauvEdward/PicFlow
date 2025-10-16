@@ -12,6 +12,11 @@ import UIKit
 
 class PhotoLibraryService: ObservableObject {
     @Published var list:[PHAsset] = []
+    
+    init() {
+        requestAuthorization { _ in }
+    }
+    
     func requestAuthorization(completion: @escaping (String) -> Void) {
         PHPhotoLibrary.requestAuthorization { status in
             switch status {

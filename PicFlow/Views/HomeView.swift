@@ -29,15 +29,15 @@ var tabs = ["house.fill", "magnifyingglass", "camera.viewfinder", "heart.fill", 
 
 struct CústomTabView: View {
     @State var selectedTab = "house.fill"
-    @State var edge = UIApplication.shared.windows.first?.safeAreaInsets
+    @EnvironmentObject var photoLibraryService: PhotoLibraryService
     var body: some View {
-        ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
+        VStack {
             TabView(selection: $selectedTab, content: {
                 MainView()
                     .tag("house.fill")
                 SearchView()
                     .tag("magnifyingglass")
-                PostView()
+                PostView(photoLibraryService: photoLibraryService)
                     .tag("camera.viewfinder")
                 NotificationsView()
                     .tag( "heart.fill")
@@ -55,15 +55,11 @@ struct CústomTabView: View {
                     }
                 }
             }
-            .padding(.horizontal, 25)
-            .padding(.vertical, 5)
-            .background(Color.white.opacity(0.9))
+            .background(.clear)
             .clipShape(Capsule())
             .shadow(color: Color.black.opacity(0.2), radius: 5, x: 5, y: 5)
             .padding(.horizontal)
-            .padding(.bottom, edge?.bottom == 0 ? 20 : 0)
         }
-        .ignoresSafeArea(.keyboard, edges: .bottom)
         .background(Color.black.opacity(0.05))
     }
 }

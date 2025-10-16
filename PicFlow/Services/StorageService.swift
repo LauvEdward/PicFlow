@@ -25,7 +25,7 @@ class StorageService {
     
     static func saveProfileImage(userId: String, username: String, email: String, imageData: Data,
                                  medatData: StorageMetadata, storageProfileImageRef: StorageReference, onSuccess: @escaping(_ user: User) -> Void, onError: @escaping(_ errMessage: String) -> Void) {
-        storageProfileImageRef.putData(imageData, metadata: medatData) { (metadata, error) in
+        storageProfileImageRef.putData(imageData, metadata: medatData) { (_, error) in
             if error != nil {
                 onError(error?.localizedDescription ?? "Error saveProfileImage")
                 return
