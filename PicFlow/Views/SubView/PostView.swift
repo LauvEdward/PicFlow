@@ -38,9 +38,17 @@ struct PostView: View {
                                 if statePostView == .selectImage {
                                     statePostView = .upload
                                 } else {
-                                    // upload and reset screen
-                                    asset = nil
-                                    statePostView = .selectImage
+                                    
+                                    guard let asset = asset else { return }
+                                    PostService.uploadPost(imageData: asset.getAssetThumbnail().jpegData(compressionQuality: 0.7) ?? Data(), caption: description) {
+                                        // upload and reset screen
+                                        self.asset = nil
+                                        self.statePostView = .selectImage
+                                    } onError: { error in
+                                        print(error)
+                                    }
+
+
                                 }
                             }
                         }

@@ -24,8 +24,12 @@ extension Encodable {
 
 extension Decodable {
     init(fromDictionary: Any) throws {
-        let decoder: JSONDecoder = JSONDecoder()
-        let jsonData = try JSONSerialization.data(withJSONObject: fromDictionary, options: .prettyPrinted)
-        self = try decoder.decode(Self.self, from: jsonData)
+        do {
+            let decoder: JSONDecoder = JSONDecoder()
+            let jsonData = try JSONSerialization.data(withJSONObject: fromDictionary, options: .prettyPrinted)
+            self = try decoder.decode(Self.self, from: jsonData)
+        } catch {
+            throw NSError()
+        }
     }
 }

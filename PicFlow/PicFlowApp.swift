@@ -14,10 +14,11 @@ struct PicFlowApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State var phasset: PHAsset?
     @StateObject var photoLibraryService = PhotoLibraryService()
+    @StateObject var sessionStore = SessionStore()
     var body: some Scene {
         WindowGroup {
             SplashView()
-                .environmentObject(SessionStore())
+                .environmentObject(sessionStore)
 //            PhotoLibraryView(phAssetSelect: $phasset)
         }
     }
