@@ -13,15 +13,10 @@ struct PhotoLibraryView: View {
     @ObservedObject var photoLibraryService: PhotoLibraryService
     let columns = Array(repeating: GridItem(.flexible(), spacing: 2), count: 4)
     var body: some View {
-        GeometryReader { geometry in
-            let w = (geometry.size.width - 2*2 - 3*2)
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 2) {
-                    ForEach(photoLibraryService.list, id: \.self) { phasset in
-                        AssetCell(asset: phasset, size: CGFloat(w/4), selectImage: $phAssetSelect)
-                            .cornerRadius(5)
-                    }
-                }
+        LazyVGrid(columns: columns, spacing: 2) {
+            ForEach(photoLibraryService.list, id: \.self) { phasset in
+                AssetCell(asset: phasset, size: CGFloat(UIScreen.main.bounds.size.width/4 - 10), selectImage: $phAssetSelect)
+                    .cornerRadius(5)
             }
         }
     }
