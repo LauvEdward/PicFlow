@@ -8,8 +8,19 @@
 import SwiftUI
 
 struct MainView: View {
+    @State var listPostCard: [PostModel] = []
     var body: some View {
-        Text("Main View")
+        ScrollView {
+            ForEach(listPostCard, id: \.postId) { card in
+                PostCardView(post: card)
+                    .padding(.bottom, 20)
+            }
+        }
+        .onAppear {
+            ProfileService.getAllPostFromUser { listPost in
+                self.listPostCard = listPost
+            }
+        }
     }
 }
 

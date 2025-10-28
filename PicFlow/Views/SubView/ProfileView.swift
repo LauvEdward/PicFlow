@@ -132,7 +132,7 @@ struct ProfileView: View {
             }
         }
         .onAppear {
-            PostService.getAllPostFromUser { posts in
+            ProfileService.getAllPostFromUser { posts in
                 listPost = posts
             }
             print(listPost)
