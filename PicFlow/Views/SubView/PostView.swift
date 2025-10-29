@@ -20,8 +20,24 @@ struct PostView: View {
     @State var description: String = ""
     @ObservedObject var photoLibraryService: PhotoLibraryService
     @State var statePostView: StatePostView  = .selectImage
+    @State private var loadState: LoadState = .success
 
     var body: some View {
+        Group {
+            switch loadState {
+            case .loading:
+                VStack(alignment: .center){
+                    ProgressView()
+                }
+            case .success:
+                viewUpload()
+            case .failed:
+                EmptyView()
+            }
+        }
+    }
+    
+    func viewUpload() -> some View {
         GeometryReader { geometry in
             ScrollView {
                 LazyVStack(pinnedViews: .sectionHeaders) {
@@ -48,6 +64,7 @@ struct PostView: View {
                                             if statePostView == .selectImage {
                                                 statePostView = .upload
                                             } else {
+                                                self.loadState = .loading
                                                 guard let asset = asset else { return }
                                                 PostService.uploadPost(
                                                     imageData: asset.getAssetThumbnail().jpegData(compressionQuality: 0.7) ?? Data(),
@@ -56,8 +73,10 @@ struct PostView: View {
                                                     // upload and reset screen
                                                     self.asset = nil
                                                     self.statePostView = .selectImage
+                                                    self.loadState = .success
                                                 } onError: { error in
                                                     print(error)
+                                                    self.loadState = .failed
                                                 }
                                             }
                                         }

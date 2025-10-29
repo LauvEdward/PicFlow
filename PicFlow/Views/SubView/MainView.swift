@@ -12,7 +12,7 @@ struct MainView: View {
     var body: some View {
         ScrollView {
             ForEach(listPostCard, id: \.postId) { card in
-                PostCardView(post: card)
+                PFPostCardView(post: card)
                     .padding(.bottom, 20)
             }
         }

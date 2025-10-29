@@ -11,12 +11,8 @@ struct HomeView: View {
     @EnvironmentObject var session: SessionStore
     var body: some View {
         VStack {
-//            Button {
-//                session.logout()
-//            } label: {
-//                Text("Logout")
-//            }
             CústomTabView()
+                .environmentObject(session)
         }
     }
 }
@@ -30,6 +26,7 @@ var tabs = ["house.fill", "magnifyingglass", "camera.viewfinder", "heart.fill", 
 struct CústomTabView: View {
     @State var selectedTab = "house.fill"
     @EnvironmentObject var photoLibraryService: PhotoLibraryService
+    @EnvironmentObject var session: SessionStore
     var body: some View {
         VStack {
             TabView(selection: $selectedTab, content: {
@@ -43,6 +40,7 @@ struct CústomTabView: View {
                     .tag( "heart.fill")
                 ProfileView()
                     .tag("person.fill")
+                    .environmentObject(session)
             })
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             .ignoresSafeArea(.all, edges: .bottom)

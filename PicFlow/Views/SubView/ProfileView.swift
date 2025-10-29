@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @EnvironmentObject var session: SessionStore
     @State private var tabSelected: Int = 1
     @State private var listPost: [PostModel] = []
+    @State private var showAlert = false
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -20,18 +22,23 @@ struct ProfileView: View {
                                 Spacer()
                                 HStack {
                                     Image(systemName: "lock.fill")
-                                    Text("Edward lauv")
+                                    Text("\(session.session?.username ?? "")")
                                     Image(systemName: "chevron.down")
                                 }
                                 Spacer()
                                 Image(systemName: "line.3.horizontal")
+                                    .onTapGesture {
+                                        showAlert = true
+                                    }
                             }
                             HStack {
-                                Image("avatar")
+                                PFCacheImage.init(url: session.session?.profileImageURL ?? "")
+                                .frame(width: geometry.size.width / 5, height: geometry.size.width / 5)
+                                .clipShape(RoundedRectangle(cornerRadius: geometry.size.width / 10, style: .continuous))
                                 Spacer()
                                 HStack(spacing: 20) {
                                     VStack {
-                                        Text("54")
+                                        Text("\(listPost.count)")
                                             .bold()
                                         Text("Post")
                                     }
@@ -48,14 +55,17 @@ struct ProfileView: View {
                                 }
                                 Spacer()
                             }
+                            .padding([.bottom], 10)
                             HStack {
                                 VStack(alignment:.leading) {
-                                    Text("Edwardlauv")
-                                        .bold()
-                                    Text("Digital goodies designer @pixsellz")
-                                        .fontWeight(.light)
-                                    Text("Everything is designed.")
-                                        .fontWeight(.light)
+                                    if ((session.session?.username.isEmpty) == false) {
+                                        Text(session.session?.username ?? "")
+                                            .bold()
+                                    }
+                                    if ((session.session?.bio.isEmpty) == false) {
+                                        Text("Digital goodies designer @pixsellz")
+                                            .fontWeight(.light)
+                                    }
                                 }
                                 Spacer()
                             }
@@ -76,20 +86,7 @@ struct ProfileView: View {
                         if tabSelected == 1 {
                             LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 100)), count: 3)) {
                                 ForEach(listPost, id: \.postId) { post in
-                                    AsyncImage(url: URL(string: post.imageUrl)) { phase in
-                                        switch phase {
-                                        case .empty:
-                                            ProgressView() // Placeholder while loading
-                                        case .success(let image):
-                                            image
-                                                .resizable()
-                                                .scaledToFill()
-                                        case .failure:
-                                            Image(systemName: "exclamationmark.triangle.fill") // Error indicator
-                                        @unknown default:
-                                            EmptyView()
-                                        }
-                                    }
+                                    PFCacheImage.init(url: post.imageUrl)
                                     .frame(width: geometry.size.width / 3, height: geometry.size.width / 3)
                                     .clipShape(RoundedRectangle(cornerRadius: PFTheme.radius, style: .continuous))
 
@@ -136,6 +133,17 @@ struct ProfileView: View {
                 listPost = posts
             }
             print(listPost)
+        }
+        .alert("Logout", isPresented: $showAlert) {
+            // Actions for the alert
+            Button("OK") {
+                session.logout()
+            }
+            Button("Cancel", role: .cancel) {
+                showAlert = false
+            }
+        } message: {
+            Text("Do you really want to sign out of your account?")
         }
     }
 }

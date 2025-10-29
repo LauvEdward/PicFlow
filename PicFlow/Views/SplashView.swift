@@ -23,6 +23,7 @@ struct SplashView: View {
                             .environmentObject(PhotoLibraryService())
                     } else {
                         SignInView()
+                            .environmentObject(session)
                     }
                 }
             }.onAppear(perform: listen)

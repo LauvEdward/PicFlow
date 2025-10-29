@@ -13,6 +13,7 @@ struct SignInView: View {
     @State private var isSigningIn: Bool = false
     @State private var showAlert = false
     @State private var message: String? = ""
+    @EnvironmentObject var session: SessionStore
     var body: some View {
         NavigationView {
             GeometryReader { proxy in
@@ -44,6 +45,7 @@ struct SignInView: View {
                                 isSigningIn = true
                                 AuthService.signIn(email: email, password: password) { user in
                                     self.isSigningIn = false
+                                    session.listen()
                                     print("Sign in Success")
                                 } onError: { errorMessage in
                                     self.isSigningIn = false

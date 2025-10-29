@@ -30,8 +30,22 @@ class AuthService {
             
             let metaData = StorageMetadata()
             metaData.contentType = "image/jpg"
-            StorageService.saveProfileImage(userId: userId, username: username, email: email, imageData: imageData, medatData: metaData, storageProfileImageRef: storageProfileUserId, onSuccess: onSuccess, onError: onError)
+            let usernameDef = self.usernameFromEmail(email)
+            StorageService.saveProfileImage(userId: userId, username: usernameDef, email: email, imageData: imageData, medatData: metaData, storageProfileImageRef: storageProfileUserId, onSuccess: onSuccess, onError: onError)
         }
+    }
+    
+    static func usernameFromEmail(_ email: String) -> String {
+        guard email.contains("@") else { return "" }
+        let namePart = email.split(separator: "@").first ?? ""
+        
+        let cleaned = namePart
+            .replacingOccurrences(of: "[^a-zA-Z0-9]", with: "_", options: .regularExpression)
+            .replacingOccurrences(of: "(?<=.)([A-Z])", with: "_$1", options: .regularExpression)
+            .lowercased()
+            .replacingOccurrences(of: "__+", with: "_")
+        
+        return cleaned.trimmingCharacters(in: CharacterSet(charactersIn: "_"))
     }
     
     static func signIn(email: String, password: String, onSuccess: @escaping(_ user: User) -> Void,

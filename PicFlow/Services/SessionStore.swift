@@ -27,6 +27,7 @@ class SessionStore: ObservableObject {
                         self.session = decodeUser
                     }
                 }
+                self.loading = false
             } else {
                 self.loading = false
                 self.session = nil
@@ -37,8 +38,10 @@ class SessionStore: ObservableObject {
     func logout() {
         do {
             try Auth.auth().signOut()
+            unbind()
+            self.loading = false
         } catch {
-            
+            self.loading = false
         }
     }
     

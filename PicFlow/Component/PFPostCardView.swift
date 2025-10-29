@@ -7,43 +7,42 @@
 
 import SwiftUI
 
-struct PostCardView: View {
+struct PFPostCardView: View {
+    @ObservedObject var postCardService = PostCardService()
     @State private var isExpanded: Bool = false
-    var post: PostModel
+    
+    init(post: PostModel) {
+        self.postCardService.post = post
+        self.postCardService.hasLikedPost()
+    }
     var body: some View {
         VStack {
             HStack {
-                Image("avatar")
-                    .resizable()
-                    .scaledToFit()
+                PFCacheImage(url: postCardService.post.profile)
                     .frame(width: 50, height: 50)
-                    .clipShape(Circle())
+                    .clipShape(RoundedRectangle(cornerRadius: 25, style: .continuous))
                 VStack {
-                    Text(post.username)
+                    Text(postCardService.post.username)
                 }
                 Spacer()
             }
             .padding(.horizontal, 10)
             .padding(.bottom, 10)
-            AsyncImage(url: URL(string: post.imageUrl)) { phase in
-                switch phase {
-                case .empty:
-                    ProgressView() // Placeholder while loading
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .clipped()
-                case .failure:
-                    Image(systemName: "exclamationmark.triangle.fill") // Error indicator
-                @unknown default:
-                    EmptyView()
-                }
-            }
-
-                
+            PFCacheImage.init(url: postCardService.post.imageUrl)
             HStack(spacing: 20) {
-                Image(systemName: "heart")
+                if postCardService.isLiked {
+                    Image(systemName: "heart.fill")
+                        .foregroundColor(.red)
+                        .onTapGesture {
+                            postCardService.unLike()
+                        }
+                } else {
+                    Image(systemName: "heart")
+                        .onTapGesture {
+                            postCardService.like()
+                        }
+                    
+                }
                 Image(systemName: "message")
                 Image(systemName: "arrow.2.squarepath")
                 Image(systemName: "paperplane")
@@ -53,7 +52,7 @@ struct PostCardView: View {
             .padding()
             HStack {
                 VStack(alignment: .leading) {
-                    Text(post.caption)
+                    Text(postCardService.post.caption)
                         .lineLimit(isExpanded ? 3 : 1)
                         .animation(.easeInOut, value: isExpanded) // Optional: add animation for smooth expansion
                     
@@ -74,5 +73,5 @@ struct PostCardView: View {
 }
 
 #Preview {
-    PostCardView(post: PostModel.init(caption: "Description", postId: "abc", userId: "phucld", imageUrl: "", username: "Phuc Dep Trai", date: 123456789, likeCount: 1, geoLocation: "", likes: [:], profile: ""))
+    PFPostCardView(post: PostModel.init(caption: "Description", postId: "abc", userId: "phucld", imageUrl: "", username: "Phuc Dep Trai", date: 123456789, likeCount: 1, geoLocation: "", likes: [:], profile: ""))
 }
