@@ -93,7 +93,11 @@ struct ProfileView: View {
                                 }
                             }
                         } else {
-                            
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 100)), count: 1)) {
+                                ForEach(listPost, id: \.postId) { post in
+                                    PFPostCardView(post: post)
+                                }
+                            }
                         }
                     } header: {
                         HStack {
@@ -123,7 +127,8 @@ struct ProfileView: View {
                                 tabSelected = 2
                             }
                             Spacer()
-                        }.padding(.vertical, 10)
+                        }
+                        .padding(.vertical, 10)
                     }
                 }
             }

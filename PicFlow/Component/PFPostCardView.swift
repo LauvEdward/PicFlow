@@ -49,12 +49,12 @@ struct PFPostCardView: View {
                 Spacer()
                 Image(systemName: "bookmark")
             }
-            .padding()
+            .padding(5)
             HStack {
                 VStack(alignment: .leading) {
                     Text(postCardService.post.caption)
                         .lineLimit(isExpanded ? 3 : 1)
-                        .animation(.easeInOut, value: isExpanded) // Optional: add animation for smooth expansion
+                        .animation(.easeInOut, value: isExpanded)
                     
                     Button(action: {
                         isExpanded.toggle()
@@ -68,6 +68,7 @@ struct PFPostCardView: View {
                 Spacer()
             }
             .padding(.horizontal, 10)
+            .padding([.bottom], 10)
         }
     }
 }
