@@ -32,7 +32,7 @@ struct CústomTabView: View {
             TabView(selection: $selectedTab, content: {
                 MainView()
                     .tag("house.fill")
-                SearchView()
+                SearchView(listUser: [])
                     .tag("magnifyingglass")
                 PostView(photoLibraryService: photoLibraryService)
                     .tag("camera.viewfinder")

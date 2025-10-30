@@ -38,6 +38,7 @@ struct PFPostCardView: View {
                         }
                 } else {
                     Image(systemName: "heart")
+                        .animation(.easeInOut, value: postCardService.isLiked)
                         .onTapGesture {
                             postCardService.like()
                         }
@@ -53,7 +54,7 @@ struct PFPostCardView: View {
             HStack {
                 VStack(alignment: .leading) {
                     Text(postCardService.post.caption)
-                        .lineLimit(isExpanded ? 3 : 1)
+                        .lineLimit(isExpanded ? 10 : 1)
                         .animation(.easeInOut, value: isExpanded)
                     
                     Button(action: {
