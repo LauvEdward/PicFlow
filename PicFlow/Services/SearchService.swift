@@ -7,6 +7,7 @@
 
 import Foundation
 import FirebaseFirestore
+import FirebaseAuth
 
 class SearchService {
     // MARK: FIX ME - Call all user and filter in UI is not good
@@ -21,7 +22,7 @@ class SearchService {
         
         q.getDocuments { snap, err in
             var users = snap?.documents.compactMap { try? User(fromDictionary: $0.data()) } ?? []
-            users = users.filter { $0.username.lowercased().contains(needle)  || $0.email.lowercased().contains(needle)}
+            users = users.filter { ($0.username.lowercased().contains(needle)  || $0.email.lowercased().contains(needle)) && ($0.uid != Auth.auth().currentUser?.uid)}
             completion(users)
         }
     }

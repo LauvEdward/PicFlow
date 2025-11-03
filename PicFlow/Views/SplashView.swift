@@ -9,10 +9,6 @@ import SwiftUI
 
 struct SplashView: View {
     @EnvironmentObject var session: SessionStore
-    func listen() {
-        session.listen()
-    }
-    
     var body: some View {
             Group {
                 if session.loading {
@@ -20,13 +16,11 @@ struct SplashView: View {
                 } else {
                     if session.session != nil {
                         HomeView()
-                            .environmentObject(PhotoLibraryService())
                     } else {
                         SignInView()
-                            .environmentObject(session)
                     }
                 }
-            }.onAppear(perform: listen)
+            }
         }
 }
 

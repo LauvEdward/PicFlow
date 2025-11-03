@@ -12,12 +12,13 @@ import Photos
 @main
 struct PicFlowApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @State var phasset: PHAsset?
     @StateObject var sessionStore = SessionStore()
+    @StateObject var photoLibraryService = PhotoLibraryService()
     var body: some Scene {
         WindowGroup {
             SplashView()
                 .environmentObject(sessionStore)
+                .environmentObject(photoLibraryService)
         }
     }
 }

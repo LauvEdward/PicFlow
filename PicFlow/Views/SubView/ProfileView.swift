@@ -9,9 +9,22 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var session: SessionStore
+    @Environment(\.dismiss) var dismiss
     @State private var tabSelected: Int = 1
     @State private var listPost: [PostModel] = []
     @State private var showAlert = false
+    @State private var isFollowing: Bool = false
+    @State private var following: Int = 0
+    @State private var follower: Int = 0
+    
+    private var isUser: Bool
+    private var user: User
+    
+    init (user: User, isUser: Bool = false) {
+        self.user = user
+        self.isUser = isUser
+    }
+
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -19,20 +32,30 @@ struct ProfileView: View {
                     Section {
                         VStack {
                             HStack(alignment: .center) {
+                                if !isUser {
+                                    HStack {
+                                        Image(systemName: "chevron.left")
+                                        Text("Back")
+                                    }.onTapGesture {
+                                        dismiss()
+                                    }
+                                }
                                 Spacer()
                                 HStack {
                                     Image(systemName: "lock.fill")
-                                    Text("\(session.session?.username ?? "")")
+                                    Text("\(user.username)")
                                     Image(systemName: "chevron.down")
                                 }
                                 Spacer()
-                                Image(systemName: "line.3.horizontal")
-                                    .onTapGesture {
-                                        showAlert = true
-                                    }
+                                if isUser {
+                                    Image(systemName: "iphone.and.arrow.forward.outward")
+                                        .onTapGesture {
+                                            showAlert = true
+                                        }
+                                }
                             }
                             HStack {
-                                PFCacheImage.init(url: session.session?.profileImageURL ?? "")
+                                PFCacheImage.init(url: user.profileImageURL)
                                 .frame(width: geometry.size.width / 5, height: geometry.size.width / 5)
                                 .clipShape(RoundedRectangle(cornerRadius: geometry.size.width / 10, style: .continuous))
                                 Spacer()
@@ -43,12 +66,12 @@ struct ProfileView: View {
                                         Text("Post")
                                     }
                                     VStack {
-                                        Text("834")
+                                        Text("\(follower)")
                                             .bold()
                                         Text("Followers")
                                     }
                                     VStack {
-                                        Text("162")
+                                        Text("\(following)")
                                             .bold()
                                         Text("Following")
                                     }
@@ -58,27 +81,52 @@ struct ProfileView: View {
                             .padding([.bottom], 10)
                             HStack {
                                 VStack(alignment:.leading) {
-                                    if ((session.session?.username.isEmpty) == false) {
-                                        Text(session.session?.username ?? "")
+                                    if ((user.username.isEmpty) == false) {
+                                        Text(user.username)
                                             .bold()
                                     }
-                                    if ((session.session?.bio.isEmpty) == false) {
+                                    if ((user.bio.isEmpty) == false) {
                                         Text("Digital goodies designer @pixsellz")
                                             .fontWeight(.light)
                                     }
                                 }
                                 Spacer()
                             }
-                            Button {
-                                
-                            } label: {
-                                Text("Edit Profile")
-                                    .bold()
-                                    .foregroundColor(.black)
+                            if isUser {
+                                Button {
+                                    
+                                } label: {
+                                    Text("Edit Profile")
+                                        .bold()
+                                        .foregroundColor(.black)
+                                }
+                                .frame(width: geometry.size.width / 1.2, height: 40)
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(10)
+                            } else {
+                                Button {
+                                    if isFollowing {
+                                        FollowService.unfollow(user.uid)
+                                        isFollowing = false
+                                    } else {
+                                        FollowService.follow(user.uid)
+                                        isFollowing = true
+                                    }
+                                    ProfileService.getFollowUser(userId: user.uid) { following in
+                                        self.following = following
+                                    } follower: { follower in
+                                        self.follower = follower
+                                    }
+                                } label: {
+                                    Text(isFollowing ? "Unfollow" : "Follow")
+                                        .bold()
+                                        .foregroundColor(.black)
+                                }
+                                .frame(width: geometry.size.width / 1.2, height: 40)
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(10)
                             }
-                            .frame(width: geometry.size.width / 1.2, height: 40)
-                            .background(Color.gray.opacity(0.2))
-                            .cornerRadius(10)
+                            
                             Spacer()
                         }.padding()
                     }
@@ -134,10 +182,20 @@ struct ProfileView: View {
             }
         }
         .onAppear {
-            ProfileService.getAllPostFromUser { posts in
+            ProfileService.getAllPostFromUser(userId: user.uid) { posts in
                 listPost = posts
             }
-            print(listPost)
+            ProfileService.getFollowUser(userId: user.uid) { following in
+                self.following = following
+            } follower: { follower in
+                self.follower = follower
+            }
+
+            if !isUser {
+                FollowService.checkIsFollowing(user.uid) { isFollowing in
+                    self.isFollowing = isFollowing
+                }
+            }
         }
         .alert("Logout", isPresented: $showAlert) {
             // Actions for the alert
@@ -151,8 +209,4 @@ struct ProfileView: View {
             Text("Do you really want to sign out of your account?")
         }
     }
-}
-
-#Preview {
-    ProfileView()
 }

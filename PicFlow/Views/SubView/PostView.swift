@@ -16,9 +16,9 @@ enum StatePostView: String {
 
 // MARK: - PostView (giữ nguyên logic, chỉ thêm style)
 struct PostView: View {
+    @EnvironmentObject private var photoLibraryService: PhotoLibraryService
     @State var asset: PHAsset?
     @State var description: String = ""
-    @ObservedObject var photoLibraryService: PhotoLibraryService
     @State var statePostView: StatePostView  = .selectImage
     @State private var loadState: LoadState = .success
 

@@ -15,6 +15,10 @@ class SessionStore: ObservableObject {
     @Published var loading = true
     var handle: AuthStateDidChangeListenerHandle?
     
+    init() {
+        listen()
+    }
+    
     func listen() {
         loading = true
         handle = Auth.auth().addStateDidChangeListener { auth, user in
