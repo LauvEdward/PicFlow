@@ -6,13 +6,12 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct HomeView: View {
-    @EnvironmentObject var session: SessionStore
     var body: some View {
         VStack {
             CústomTabView()
-                .environmentObject(session)
         }
     }
 }
@@ -25,22 +24,20 @@ var tabs = ["house.fill", "magnifyingglass", "camera.viewfinder", "heart.fill", 
 
 struct CústomTabView: View {
     @State var selectedTab = "house.fill"
-    @EnvironmentObject var photoLibraryService: PhotoLibraryService
     @EnvironmentObject var session: SessionStore
     var body: some View {
         VStack {
             TabView(selection: $selectedTab, content: {
                 MainView()
                     .tag("house.fill")
-                SearchView(listUser: [])
+                SearchView()
                     .tag("magnifyingglass")
-                PostView(photoLibraryService: photoLibraryService)
+                PostView()
                     .tag("camera.viewfinder")
                 NotificationsView()
                     .tag( "heart.fill")
-                ProfileView()
+                ProfileView(user: session.session!, isUser: true)
                     .tag("person.fill")
-                    .environmentObject(session)
             })
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             .ignoresSafeArea(.all, edges: .bottom)
