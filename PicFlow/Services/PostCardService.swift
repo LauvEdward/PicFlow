@@ -23,6 +23,10 @@ class PostCardService: ObservableObject {
         
         PostService.postUserId(userId: post.userId).collection("posts").document(post.postId)
             .updateData(["likeCount" : post.likeCount, "likes": ["\(Auth.auth().currentUser!.uid)" : true]])
+        PostService.timeLineUserId(userId: post.userId).collection("timeline").document(post.postId)
+            .updateData(["likeCount" : post.likeCount, "likes": ["\(Auth.auth().currentUser!.uid)" : true]])
+        PostService.allPosts.document(post.postId)
+            .updateData(["likeCount" : post.likeCount, "likes": ["\(Auth.auth().currentUser!.uid)" : true]])
         
     }
     
@@ -31,6 +35,10 @@ class PostCardService: ObservableObject {
         isLiked = false
         
         PostService.postUserId(userId: post.userId).collection("posts").document(post.postId)
+            .updateData(["likeCount" : post.likeCount, "likes": ["\(Auth.auth().currentUser!.uid)" : true]])
+        PostService.timeLineUserId(userId: post.userId).collection("timeline").document(post.postId)
+            .updateData(["likeCount" : post.likeCount, "likes": ["\(Auth.auth().currentUser!.uid)" : true]])
+        PostService.allPosts.document(post.postId)
             .updateData(["likeCount" : post.likeCount, "likes": ["\(Auth.auth().currentUser!.uid)" : true]])
         
     }

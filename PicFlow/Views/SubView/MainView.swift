@@ -17,7 +17,7 @@ struct MainView: View {
             }
         }
         .onAppear {
-            ProfileService.getAllPostFromUser { listPost in
+            PostService.getAllPost { listPost in
                 self.listPostCard = listPost
             }
         }
