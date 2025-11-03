@@ -48,7 +48,7 @@ struct ProfileView: View {
                                 }
                                 Spacer()
                                 if isUser {
-                                    Image(systemName: "line.3.horizontal")
+                                    Image(systemName: "iphone.and.arrow.forward.outward")
                                         .onTapGesture {
                                             showAlert = true
                                         }
