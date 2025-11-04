@@ -36,8 +36,13 @@ struct CústomTabView: View {
                     .tag("camera.viewfinder")
                 NotificationsView()
                     .tag( "heart.fill")
-                ProfileView(user: session.session!, isUser: true)
-                    .tag("person.fill")
+                if let user = session.session {
+                    ProfileView(user: user, isUser: true)
+                        .tag("person.fill")
+                } else {
+                    SignInView()
+                        .tag("person.fill")
+                }
             })
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             .ignoresSafeArea(.all, edges: .bottom)
