@@ -8,12 +8,15 @@
 import SwiftUI
 
 struct PFPostCardView: View {
-    @ObservedObject var postCardService = PostCardService()
+    @ObservedObject var postCardService: PostCardService
+    @EnvironmentObject var session: SessionStore
     @State private var isExpanded: Bool = false
     
     init(post: PostModel) {
-        self.postCardService.post = post
-        self.postCardService.hasLikedPost()
+        postCardService = PostCardService(post: post)
+    }
+    init(postCardService: PostCardService) {
+        self.postCardService = postCardService
     }
     var body: some View {
         VStack {
@@ -41,10 +44,18 @@ struct PFPostCardView: View {
                         .animation(.easeInOut, value: postCardService.isLiked)
                         .onTapGesture {
                             postCardService.like()
+                            NotificationService.addNotification(.like, notiUserId: postCardService.post.userId, userId: session.session!, postId: postCardService.post.postId, postImage: postCardService.post.imageUrl)
                         }
                     
                 }
-                Image(systemName: "message")
+                NavigationLink {
+                    PostDetailView(post: postCardService.post)
+                        .navigationBarHidden(true)
+                        .background(Color.black.opacity(0.05))
+                } label: {
+                    Image(systemName: "message")
+                }
+                .foregroundColor(.black)
                 Image(systemName: "arrow.2.squarepath")
                 Image(systemName: "paperplane")
                 Spacer()
@@ -75,5 +86,6 @@ struct PFPostCardView: View {
 }
 
 #Preview {
-    PFPostCardView(post: PostModel.init(caption: "Description", postId: "abc", userId: "phucld", imageUrl: "", username: "Phuc Dep Trai", date: 123456789, likeCount: 1, geoLocation: "", likes: [:], profile: ""))
+    var stateObject = PostCardService(post: PostModel.init(caption: "Description", postId: "abc", userId: "phucld", imageUrl: "", username: "Phuc Dep Trai", date: 123456789, likeCount: 1, geoLocation: "", likes: [:], profile: ""))
+    PFPostCardView(postCardService: stateObject)
 }
