@@ -10,18 +10,12 @@ import SwiftUI
 struct SplashView: View {
     @EnvironmentObject var session: SessionStore
     var body: some View {
-            Group {
-                if session.loading {
-                    ProgressView()
-                } else {
-                    if session.session != nil {
-                        HomeView()
-                    } else {
-                        SignInView()
-                    }
-                }
-            }
+        if session.session != nil {
+            HomeView()
+        } else {
+            SignInView()
         }
+    }
 }
 
 #Preview {
