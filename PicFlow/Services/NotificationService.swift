@@ -22,6 +22,7 @@ class NotificationService: ObservableObject {
                 print(error)
                 return
             }
+            self.listNotification = []
             for item in snapshot?.documents ?? [] {
                 let noti = try? item.data(as: NotificationModel.self)
                 guard let noti = noti else { return }

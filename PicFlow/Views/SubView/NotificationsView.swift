@@ -49,7 +49,7 @@ struct NotificationsView: View {
             }
             .padding()
         }
-        .onAppear {
+        .task {
             notificationsService.fetchNotification(userId: session.session?.uid ?? "")
         }
     }

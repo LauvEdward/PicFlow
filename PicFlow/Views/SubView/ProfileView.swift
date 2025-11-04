@@ -182,7 +182,7 @@ struct ProfileView: View {
                 }
             }
         }
-        .onAppear {
+        .task {
             ProfileService.getAllPostFromUser(userId: user.uid) { posts in
                 listPost = posts
             }
