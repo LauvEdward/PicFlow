@@ -110,6 +110,7 @@ struct ProfileView: View {
                                         isFollowing = false
                                     } else {
                                         FollowService.follow(user.uid)
+                                        NotificationService.addNotification(.follow, notiUserId: user.uid, userId: session.session!)
                                         isFollowing = true
                                     }
                                     ProfileService.getFollowUser(userId: user.uid) { following in
@@ -181,7 +182,7 @@ struct ProfileView: View {
                 }
             }
         }
-        .onAppear {
+        .task {
             ProfileService.getAllPostFromUser(userId: user.uid) { posts in
                 listPost = posts
             }

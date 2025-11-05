@@ -10,13 +10,16 @@ import SwiftUI
 struct MainView: View {
     @State var listPostCard: [PostModel] = []
     var body: some View {
-        ScrollView {
-            ForEach(listPostCard, id: \.postId) { card in
-                PFPostCardView(post: card)
-                    .padding(.bottom, 20)
+        NavigationView {
+            ScrollView {
+                ForEach(listPostCard, id: \.postId) { card in
+                    PFPostCardView(post: card)
+                        .padding(.bottom, 20)
+                }
             }
+            .background(Color.black.opacity(0.05))
         }
-        .onAppear {
+        .task {
             PostService.getAllPost { listPost in
                 self.listPostCard = listPost
             }
